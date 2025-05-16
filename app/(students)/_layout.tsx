@@ -15,7 +15,8 @@ const _layout = () => {
         },
         headerTitleStyle: {
           color: '#416FDF'
-        }
+        },
+        headerShown: false
       }}>
           <Tabs.Screen name='index' options={{
             title: 'Home',

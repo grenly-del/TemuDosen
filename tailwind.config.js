@@ -12,7 +12,8 @@ module.exports = {
       colors: {
         primary: '#416FDF',
         borderClr: '#DFDFDF',
-        textClr: '#454545'
+        textClr: '#454545',
+        bgColorBox: '#E0E9FF'
       }
     },
   },

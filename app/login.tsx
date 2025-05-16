@@ -58,7 +58,7 @@ export default function LoginScreen () {
                                 </View>
                             </TouchableWithoutFeedback>
                             <View className="flex flex-col gap-y-3">
-                                <Link href={"(tabs)"} className="bg-primary py-4 rounded-xl">
+                                <Link href={"(students)"} className="bg-primary py-4 rounded-xl">
                                     <Text className="text-white text-center">Masuk</Text>
                                 </Link>
 
