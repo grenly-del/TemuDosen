@@ -33,6 +33,9 @@ export default function RootLayout() {
          <Stack.Screen name="(detail)/[id]" options={{
           headerShown: false
         }}/>
+         <Stack.Screen name="(schedule)/[id]" options={{
+          headerShown: false
+        }}/>
       </Stack>
     )
 }

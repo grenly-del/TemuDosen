@@ -1,9 +1,9 @@
+import CardList from '@/components/CardList';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, FlatList, Image, ScrollView, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, ScrollView, Text, TextInput, View } from 'react-native';
 
-interface DataType {
+export interface DataType {
   id: string;
   image: any;
   nama: string;
@@ -39,40 +39,9 @@ const data: DataType[] = [
   },
 ];
 
-const screenWidth = Dimensions.get('window').width;
-const itemWidth = screenWidth / 2 - 20; // 2 item muat layar, minus margin
 
 const Index = () => {
-  const router = useRouter()
-  const renderList = ({ item }: { item: DataType }) => {
-    return (
-      <TouchableWithoutFeedback onPress={() => router.push({
-        pathname: '/(detail)/[id]',
-        params: {
-          id: item.id
-        }
-      })}>
-        <View
-          className="bg-white h-full rounded-xl overflow-hidden shadow-md mx-2 relative"
-          style={{ width: itemWidth }}
-        >
-          <Image source={item.image} className="w-full h-36" resizeMode="cover" />
-          <View className="p-3">
-            <Text className="text-blue-700 text-sm mb-1" numberOfLines={1} ellipsizeMode="tail">{item.jabatan}</Text>
-            <Text className="text-lg font-semibold mb-1" numberOfLines={1} ellipsizeMode="tail">{item.nama}</Text>
-            <Text className="text-base text-gray-700" numberOfLines={1} ellipsizeMode="tail">Fakultas {item.fakultas}</Text>
-            <Text className={`text-base ${item.status ? 'text-green-600': 'text-red-700'} mt-6`}>{item.status ? 'Active' : 'Non-Active'}</Text>
-          </View>
-          <TouchableHighlight className='w-[35px] h-[35px] bg-primary absolute bottom-3 right-2 flex justify-center items-center rounded-full'>
-            <View className=''>
-              <FontAwesome name='paper-plane' size={17} color={'white'}/>
-            </View>
-          </TouchableHighlight>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  };
- 
+  
   return (
     <ScrollView className="bg-white flex-1 pt-4" contentContainerStyle={{
       paddingBottom: 20
@@ -85,7 +54,7 @@ const Index = () => {
         <Text className='px-4 mb-5 mt-2 text-xl font-semibold'>Dosen Terpopuler</Text>
         <FlatList
           data={data}
-          renderItem={renderList}
+          renderItem={CardList}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -97,7 +66,7 @@ const Index = () => {
         <Text className='px-4 mb-5 mt-2 text-xl font-semibold'>Dosen Fakultas</Text>
         <FlatList
           data={data}
-          renderItem={renderList}
+          renderItem={CardList}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
