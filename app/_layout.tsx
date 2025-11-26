@@ -1,3 +1,4 @@
+import { ContactedProvider } from "@/contexts/ContactedContext";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import './global.css';
@@ -12,6 +13,7 @@ export default function RootLayout() {
     return null
   }
   return (
+    <ContactedProvider>
       <Stack screenOptions={{
         animation: 'ios_from_left'
       }}>
@@ -37,5 +39,6 @@ export default function RootLayout() {
           headerShown: false
         }}/>
       </Stack>
-    )
+    </ContactedProvider>
+  )
 }

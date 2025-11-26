@@ -110,6 +110,16 @@ const _layout = () => {
             <FontAwesome size={28} name="home" color={color} />
           ),
         }} />
+        <Tabs.Screen name="chat" options={{
+          title: 'Chat',
+          tabBarStyle: {
+            backgroundColor: '#fff',
+          },
+          headerShown: true,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 size={28} name="comments" color={color} />
+          ),
+        }} />
         <Tabs.Screen name="profile" options={{
           title: 'Profil',
           tabBarStyle: {
