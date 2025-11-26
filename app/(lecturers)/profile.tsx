@@ -1,39 +1,10 @@
 import { useAuth } from "@/contexts/AuthContext";
-import CardList from '@/components/CardList';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import type { DataType } from '.';
-
-const data: DataType[] = [
-  {
-    id: '01',
-    image: require('../../assets/images/foto-1.png'),
-    nama: 'Stenly Pungus  M.Com Phd',
-    jabatan: 'Kaprodi Sistem Informasi',
-    fakultas: 'Ilmu Komputer',
-    status: true,
-  },
-  {
-    id: '02',
-    image: require('../../assets/images/foto-1.png'),
-    nama: 'Stenly Adam  M.Com',
-    jabatan: 'Dosen',
-    fakultas: 'Ilmu Komputer',
-    status: false,
-  },
-  {
-    id: '03',
-    image: require('../../assets/images/foto-1.png'),
-    nama: 'Green Sandakh  M.Com',
-    jabatan: 'Dosen',
-    fakultas: 'Ilmu Komputer',
-    status: false,
-  },
-];
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 const InfoRow = ({ iconName, label, value, iconLibrary = 'FontAwesome5' }: { 
     iconName: string, 
@@ -56,7 +27,7 @@ const InfoRow = ({ iconName, label, value, iconLibrary = 'FontAwesome5' }: {
     );
 };
 
-const Profile = () => {
+const LecturerProfile = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
 
@@ -72,6 +43,13 @@ const Profile = () => {
   const handleEditProfile = () => {
     // Fungsi untuk edit profile (bisa ditambahkan nanti)
     console.log('Edit profile');
+  };
+
+  // Mock statistics - akan diganti dengan data real
+  const stats = {
+    totalStudents: 25,
+    activeSchedules: 8,
+    completedConsultations: 120,
   };
 
   return (
@@ -99,10 +77,10 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
           <Text className='text-2xl font-bold text-gray-900 mt-4'>
-            {user?.nama || 'Mahasiswa'}
+            {user?.nama || 'Dosen'}
           </Text>
           <Text className='text-base text-gray-600 mt-1'>
-            {user?.jurusan ? `Mahasiswa ${user.jurusan}` : 'Mahasiswa'}
+            {user?.jabatan || 'Dosen'} • {user?.fakultas || 'Fakultas'}
           </Text>
         </View>
       </View>
@@ -126,19 +104,19 @@ const Profile = () => {
             value={user?.nama || '-'}
           />
           <InfoRow 
+            iconName='briefcase' 
+            label='Jabatan' 
+            value={user?.jabatan || '-'}
+          />
+          <InfoRow 
             iconName='university' 
             label='Fakultas' 
             value={user?.fakultas || '-'}
           />
           <InfoRow 
-            iconName='graduation-cap' 
-            label='Jurusan' 
-            value={user?.jurusan || '-'}
-          />
-          <InfoRow 
             iconName='id-card' 
-            label='NIM' 
-            value={user?.nim || user?.noRegis || '-'}
+            label='NIDN' 
+            value={user?.nidn || user?.noRegis || '-'}
           />
           <InfoRow 
             iconName='envelope' 
@@ -148,45 +126,35 @@ const Profile = () => {
         </View>
       </View>
 
-      {/* Rekomendasi Section */}
-      <View className='bg-white mt-3 px-4 py-5'>
-        <View className='flex flex-row items-center gap-x-3 mb-4'>
-          <FontAwesome5 name='history' size={22} color="#416FDF"/>
-          <Text className='text-xl text-gray-900 font-bold'>Rekomendasi Dosen</Text>
-        </View>
-        <View>
-          <FlatList
-            data={data}
-            renderItem={CardList}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 4, height: 270 }}
-            className='py-2'
-          />
-        </View>
-      </View>
-
-      {/* Statistik Section */}
+      {/* Statistics Section */}
       <View className='bg-white mt-3 px-4 py-5'>
         <View className='flex flex-row items-center gap-x-3 mb-4'>
           <Ionicons name='stats-chart' size={22} color="#416FDF"/>
           <Text className='text-xl text-gray-900 font-bold'>Statistik</Text>
         </View>
-        <View className='flex flex-row gap-3'>
+        <View className='flex-row gap-3'>
           <View className='flex-1 bg-blue-50 rounded-xl p-4 border border-blue-100'>
             <View className='flex flex-row items-center gap-x-2 mb-2'>
               <Ionicons name='people-outline' size={20} color="#416FDF"/>
-              <Text className='text-xs text-gray-600 font-medium'>Dosen Dihubungi</Text>
+              <Text className='text-xs text-gray-600 font-medium'>Total Mahasiswa</Text>
             </View>
-            <Text className='text-2xl font-bold text-blue-600'>5</Text>
+            <Text className='text-2xl font-bold text-blue-600'>{stats.totalStudents}</Text>
           </View>
           <View className='flex-1 bg-green-50 rounded-xl p-4 border border-green-100'>
             <View className='flex flex-row items-center gap-x-2 mb-2'>
               <Ionicons name='calendar-outline' size={20} color="#10B981"/>
               <Text className='text-xs text-gray-600 font-medium'>Jadwal Aktif</Text>
             </View>
-            <Text className='text-2xl font-bold text-green-600'>3</Text>
+            <Text className='text-2xl font-bold text-green-600'>{stats.activeSchedules}</Text>
+          </View>
+        </View>
+        <View className='mt-3'>
+          <View className='bg-purple-50 rounded-xl p-4 border border-purple-100'>
+            <View className='flex flex-row items-center gap-x-2 mb-2'>
+              <Ionicons name='checkmark-circle-outline' size={20} color="#8B5CF6"/>
+              <Text className='text-xs text-gray-600 font-medium'>Konsultasi Selesai</Text>
+            </View>
+            <Text className='text-2xl font-bold text-purple-600'>{stats.completedConsultations}</Text>
           </View>
         </View>
       </View>
@@ -205,4 +173,5 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default LecturerProfile
+

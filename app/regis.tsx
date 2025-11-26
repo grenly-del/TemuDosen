@@ -1,13 +1,48 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "expo-router";
-import { ImageBackground, Text, TextInput, TouchableHighlight, TouchableWithoutFeedback, View } from "react-native";
+import { useState } from "react";
+import { ImageBackground, Text, TextInput, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from 'react-native-svg';
+import { UserRole } from "@/types/user";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function RegisScreen () {
     const router = useRouter()
     const insets = useSafeAreaInsets()
+    const { register } = useAuth()
+    const [username, setUsername] = useState('')
+    const [noRegis, setNoRegis] = useState('')
+    const [password, setPassword] = useState('')
+    const [selectedRole, setSelectedRole] = useState<UserRole>('student')
+    const [isLoading, setIsLoading] = useState(false)
+
     const handlePress = () => {
         router.push('/')
+    }
+
+    const handleRegister = async () => {
+        if (!username.trim() || !noRegis.trim() || !password.trim()) {
+            alert('Mohon lengkapi semua field')
+            return
+        }
+
+        try {
+            setIsLoading(true)
+            await register(username, noRegis, password, selectedRole)
+            
+            // Navigate based on role
+            if (selectedRole === 'lecturer') {
+                router.replace('/(lecturers)')
+            } else {
+                router.replace('/(students)')
+            }
+        } catch (error) {
+            console.error('Registration error:', error)
+            alert('Terjadi kesalahan saat registrasi')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
@@ -31,19 +66,74 @@ export default function RegisScreen () {
                 <View className="w-full bg-white rounded-t-3xl px-5 pt-8 pb-12 flex-1 items-center">
                     <Text className="text-[27px] font-bold text-center text-primary w-[260px]">Ayo mulai!</Text>
                     <Text className="text-lg text-textClr">Cari dosen pembimbingmu!</Text>
-                    <View className="flex flex-col w-full mt-[60px] gap-y-10">
+                    <View className="flex flex-col w-full mt-[40px] gap-y-6">
+                        {/* Role Selection */}
+                        <View>
+                            <Text className="text-[15px] font-bold text-text mb-3">Daftar Sebagai</Text>
+                            <View className="flex-row gap-3">
+                                <TouchableOpacity
+                                    onPress={() => setSelectedRole('student')}
+                                    className={`flex-1 py-3 px-4 rounded-xl border-2 ${
+                                        selectedRole === 'student' 
+                                            ? 'bg-blue-50 border-blue-500' 
+                                            : 'bg-gray-50 border-gray-200'
+                                    }`}
+                                >
+                                    <View className="flex-row items-center justify-center gap-x-2">
+                                        <FontAwesome5 
+                                            name="user-graduate" 
+                                            size={16} 
+                                            color={selectedRole === 'student' ? '#416FDF' : '#6B7280'} 
+                                        />
+                                        <Text className={`font-semibold ${
+                                            selectedRole === 'student' ? 'text-blue-600' : 'text-gray-600'
+                                        }`}>
+                                            Mahasiswa
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => setSelectedRole('lecturer')}
+                                    className={`flex-1 py-3 px-4 rounded-xl border-2 ${
+                                        selectedRole === 'lecturer' 
+                                            ? 'bg-blue-50 border-blue-500' 
+                                            : 'bg-gray-50 border-gray-200'
+                                    }`}
+                                >
+                                    <View className="flex-row items-center justify-center gap-x-2">
+                                        <FontAwesome5 
+                                            name="chalkboard-teacher" 
+                                            size={16} 
+                                            color={selectedRole === 'lecturer' ? '#416FDF' : '#6B7280'} 
+                                        />
+                                        <Text className={`font-semibold ${
+                                            selectedRole === 'lecturer' ? 'text-blue-600' : 'text-gray-600'
+                                        }`}>
+                                            Dosen
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
                          <View>
                             <Text className="text-[15px] font-bold text-text">Username</Text>
                             <TextInput 
                                 placeholder="Masukkan username ..." 
                                 className="border border-borderClr mt-2 px-4 py-4 rounded-lg"
+                                value={username}
+                                onChangeText={setUsername}
                             />
                         </View>
                         <View>
-                            <Text className="text-[15px] font-bold text-text">No.Regis</Text>
+                            <Text className="text-[15px] font-bold text-text">
+                                {selectedRole === 'lecturer' ? 'NIDN' : 'NIM'}
+                            </Text>
                             <TextInput 
-                                placeholder="Masukkan no regis ..." 
+                                placeholder={selectedRole === 'lecturer' ? 'Masukkan NIDN ...' : 'Masukkan NIM ...'} 
                                 className="border border-borderClr mt-2 px-4 py-4 rounded-lg"
+                                value={noRegis}
+                                onChangeText={setNoRegis}
                             />
                         </View>
                         <View>
@@ -51,17 +141,29 @@ export default function RegisScreen () {
                             <TextInput 
                                 placeholder="Masukkan password ..." 
                                 className="border border-borderClr mt-2 px-4 py-4 rounded-lg"
+                                secureTextEntry
+                                value={password}
+                                onChangeText={setPassword}
                             />
                         </View>
 
-                        <View className="flex flex-col gap-y-3">
-                            <TouchableHighlight className="bg-primary py-4 rounded-full">
-                                <Text className="text-white text-center">Daftar</Text>
+                        <View className="flex flex-col gap-y-3 mt-2">
+                            <TouchableHighlight 
+                                onPress={handleRegister}
+                                disabled={isLoading}
+                                className={`py-4 rounded-full ${isLoading ? 'bg-gray-400' : 'bg-primary'}`}
+                            >
+                                <Text className="text-white text-center font-semibold">
+                                    {isLoading ? 'Mendaftar...' : 'Daftar'}
+                                </Text>
                             </TouchableHighlight>
 
                             <Text className="text-center text-text">Atau</Text>
 
-                            <TouchableHighlight className="border border-primary py-4 rounded-full">
+                            <TouchableHighlight 
+                                onPress={() => router.push('/login')}
+                                className="border border-primary py-4 rounded-full"
+                            >
                                 <Text className="text-primary text-center">Masuk</Text>
                             </TouchableHighlight>
                         </View>

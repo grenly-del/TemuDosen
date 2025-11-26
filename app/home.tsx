@@ -1,6 +1,6 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ImageBackground, Text, View } from "react-native";
+import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Index() {
@@ -28,16 +28,28 @@ export default function Index() {
             <View className="absolute flex flex-row w-full justify-between bottom-0" style={{
               marginBottom: inset.bottom
             }}>
-              <Link href={'/login'} className={`py-6 ${active === 'masuk' ? 'bg-white' : 'bg-transparent'} px-20 rounded-tr-[36px]`} onPress={() => handlePressBtn('masuk')}>
+              <TouchableOpacity 
+                onPress={() => {
+                  handlePressBtn('masuk');
+                  router.push('/login');
+                }}
+                className={`py-6 ${active === 'masuk' ? 'bg-white' : 'bg-transparent'} px-20 rounded-tr-[36px]`}
+              >
                 <View className="">
                   <Text className={`text-lg ${active === 'masuk' ? 'text-primary': 'text-white'} font-semibold`}>Masuk</Text>
                 </View>
-              </Link>
-              <Link href={'/regis'} className={`py-6 ${active === 'daftar' ? 'bg-white' : 'bg-transparent'} px-20 rounded-tl-[36px]`} onPress={() => handlePressBtn('daftar')}>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={() => {
+                  handlePressBtn('daftar');
+                  router.push('/regis');
+                }}
+                className={`py-6 ${active === 'daftar' ? 'bg-white' : 'bg-transparent'} px-20 rounded-tl-[36px]`}
+              >
                 <View>
                   <Text className={`${active === 'daftar' ? 'text-primary': 'text-white'} text-lg`}>Daftar</Text>
                 </View>
-              </Link>
+              </TouchableOpacity>
             </View>
           </View>
       </ImageBackground>
